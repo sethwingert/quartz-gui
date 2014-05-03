@@ -9,6 +9,14 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
+	<repositories>
+		<repository>
+			<id>jboss-public-repository-group</id>
+			<name>JBoss Public Repository Group</name>
+			<url>http://repository.jboss.org/nexus/content/groups/public-jboss</url>
+		</repository>
+	</repositories>
+
 	<dependencies>
 		<dependency>
 			<groupId>javax</groupId>
@@ -25,7 +33,16 @@
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.11</version>
+			<scope>test</scope>
 		</dependency>
+		<!-- For JBoss EAP 6.1 -->
+		<dependency>
+			<groupId>org.jboss.remotingjmx</groupId>
+			<artifactId>remoting-jmx</artifactId>
+			<version>1.1.0.Final</version>
+			<scope>test</scope>
+		</dependency>
+
 		<dependency>
 			<groupId>org.quartz-scheduler</groupId>
 			<artifactId>quartz</artifactId>

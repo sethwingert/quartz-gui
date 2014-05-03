@@ -54,4 +54,15 @@ public class QuartzGuiMBeanScheduler extends RemoteMBeanScheduler {
 		}
 	}
 
+	@Override
+	public String toString() {
+		try {
+			return "QuartzGuiMBeanScheduler [getSchedulerName()=" + getSchedulerName() + ", getSchedulerInstanceId()="
+					+ getSchedulerInstanceId() + ", isStarted()=" + isStarted() + "]";
+		} catch (SchedulerException e) {
+			e.printStackTrace();
+			return "Scheduler exception thrown when trying to produce toString()";
+		}
+	}
+
 }
