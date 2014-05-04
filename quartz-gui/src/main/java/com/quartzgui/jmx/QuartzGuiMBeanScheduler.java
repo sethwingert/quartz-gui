@@ -24,7 +24,7 @@ public class QuartzGuiMBeanScheduler extends RemoteMBeanScheduler {
 
 	@Override
 	public void initialize() throws SchedulerException {
-		//JmxClient takes care of it
+		//constructor takes care of it
 	}
 
 	@Override

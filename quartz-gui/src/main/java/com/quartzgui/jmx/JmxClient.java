@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.management.MBeanServerConnection;
 import javax.management.MalformedObjectNameException;
@@ -19,35 +20,41 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Connects to one Quartz JMX Server.
+ * Connects to one Quartz JMX Server. Each server can contain many schedulers, which are
+ * represented by a list of {@link QuartzGuiMBeanScheduler}.  Each JmxClient is associated with one
+ * {@link JmxClientConfig}.
  * 
  * @author Seth Wingert
  * 
  */
-public class JmxClient implements Closeable{
+public class JmxClient implements Closeable {
 
 	private static final Logger logger = LoggerFactory.getLogger(JmxClient.class);
-	
+
+	protected String id;
 	protected JmxClientConfig config;
 	protected JMXConnector jmxConnector;
 	protected List<QuartzGuiMBeanScheduler> schedulers;
 
 	public JmxClient(JmxClientConfig config) throws IOException, MalformedObjectNameException {
-		// StringBuffer stringBuffer = new StringBuffer().append("service:jmx:remoting-jmx://")
+		id = UUID.randomUUID().toString();
+		// StringBuffer stringBuffer = new
+		// StringBuffer().append("service:jmx:remoting-jmx://")
 		// .append("localhost").append(":").append("4447");
 		this.config = config;
-		logger.info("Attempting to connect to [{}] with username [{}] and password [{}]", config.getUrl(), config.getUsername(), config.getPassword());
+		logger.info("Attempting to connect to [{}] with username [{}] and password [{}]", config.getUrl(),
+				config.getUsername(), config.getPassword());
 		JMXServiceURL jmxServiceUrl = new JMXServiceURL(config.getUrl());
 		Map<String, String[]> env = new HashMap<String, String[]>();
 		env.put(JMXConnector.CREDENTIALS, new String[] { config.getUsername(), config.getPassword() });
 		jmxConnector = JMXConnectorFactory.connect(jmxServiceUrl, env);
 		MBeanServerConnection connection = jmxConnector.getMBeanServerConnection();
 		ObjectName mBeanName = new ObjectName("quartz:type=QuartzScheduler,*");
-	    Set<ObjectName> names = connection.queryNames(mBeanName, null);
-	    schedulers = new ArrayList<>();
-	    for (ObjectName name : names) {
-	    	schedulers.add(new QuartzGuiMBeanScheduler(connection, name));
-	    }
+		Set<ObjectName> names = connection.queryNames(mBeanName, null);
+		schedulers = new ArrayList<>();
+		for (ObjectName name : names) {
+			schedulers.add(new QuartzGuiMBeanScheduler(connection, name));
+		}
 	}
 
 	@Override
@@ -69,5 +76,9 @@ public class JmxClient implements Closeable{
 
 	public void setConfig(JmxClientConfig config) {
 		this.config = config;
+	}
+	
+	public String getId() {
+		return id;
 	}
 }
