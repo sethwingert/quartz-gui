@@ -2,6 +2,7 @@ package com.quartzgui.jmx;
 
 public class JmxClientConfig {
 	
+	private String uuid;
 	private String url;
 	private String username;
 	private String password;
@@ -28,6 +29,14 @@ public class JmxClientConfig {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	public String getUuid() {
+		return uuid;
+	}
+
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
 	}
 
 }
