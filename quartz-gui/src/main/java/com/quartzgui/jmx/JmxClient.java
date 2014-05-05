@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 
 import javax.management.MBeanServerConnection;
 import javax.management.MalformedObjectNameException;
@@ -31,13 +30,13 @@ public class JmxClient implements Closeable {
 
 	private static final Logger logger = LoggerFactory.getLogger(JmxClient.class);
 
-	protected String id;
+	protected final String id;
 	protected JmxClientConfig config;
 	protected JMXConnector jmxConnector;
 	protected List<QuartzGuiMBeanScheduler> schedulers;
 
 	public JmxClient(JmxClientConfig config) throws IOException, MalformedObjectNameException {
-		id = UUID.randomUUID().toString();
+		id = config.getId(); //same ID as config file
 		// StringBuffer stringBuffer = new
 		// StringBuffer().append("service:jmx:remoting-jmx://")
 		// .append("localhost").append(":").append("4447");
@@ -58,8 +57,12 @@ public class JmxClient implements Closeable {
 	}
 
 	@Override
-	public void close() throws IOException {
-		jmxConnector.close();
+	public void close() {
+		try {
+			jmxConnector.close();
+		} catch (IOException e) {
+			logger.warn("Unable to close connection to JMX",e);
+		}
 	}
 
 	public List<QuartzGuiMBeanScheduler> getSchedulers() {
@@ -80,5 +83,30 @@ public class JmxClient implements Closeable {
 	
 	public String getId() {
 		return id;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		JmxClient other = (JmxClient) obj;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		return true;
 	}
 }

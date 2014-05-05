@@ -16,7 +16,7 @@ import com.quartzgui.jmx.JmxClientConfig;
 public class ClientConfigMemoryDao implements ClientConfigDao {
 
 	/**In Memory Database**/
-	protected Map<String, JmxClientConfig> clientConfigs = new ConcurrentHashMap<>();
+	protected static Map<String, JmxClientConfig> clientConfigs = new ConcurrentHashMap<>();
 	
 	@Override
 	public List<JmxClientConfig> findClientConfigs() {

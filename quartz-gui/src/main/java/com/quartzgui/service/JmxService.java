@@ -1,6 +1,8 @@
 package com.quartzgui.service;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -14,24 +16,84 @@ import com.quartzgui.dao.ClientConfigMemoryDao;
 import com.quartzgui.jmx.JmxClient;
 import com.quartzgui.jmx.JmxClientConfig;
 
+/**
+ * Application level service with static methods. Use this to initialize, create, and retrieve JMX Clients.
+ * Possibly call a getInstance() method on this singleton instead of making everything static.
+ * 
+ * @author sw8840
+ * 
+ */
 public class JmxService {
 
 	Logger logger = LoggerFactory.getLogger(JmxService.class);
-	
-	/**Stored in memory so no need to connect to JMX server every time**/
-	private Map<String, JmxClient> jmxClients = new ConcurrentHashMap<String, JmxClient>();
-	
-	private ClientConfigDao clientConfigDao;
-	
-	public void init() {
-		/**Use properties file to determine which configDao to get**/
+
+	/** JmxClients are stored in memory so no need to connect to JMX server with every request **/
+	private static final Map<String, JmxClient> jmxClientCache = new ConcurrentHashMap<String, JmxClient>();
+
+	private static final ClientConfigDao clientConfigDao;
+
+	static {
+		// Use properties file to determine which configDao to get**/
 		clientConfigDao = new ClientConfigMemoryDao();
+		// load up prestored clients
+		for (JmxClientConfig clientConfig : clientConfigDao.findClientConfigs()) {
+			try {
+				getJmxClient(clientConfig);
+			} catch (MalformedObjectNameException | IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
-	
-	public JmxClient connect(JmxClientConfig clientConfig) throws MalformedObjectNameException, IOException {
-		JmxClient client = new JmxClient(clientConfig);
-		//store in cache
-		jmxClients.put(client.getId(), client);
-		return client;
+
+	/**
+	 * Gets a JMX client from cache or create one and store in cache if it doesn't exist.
+	 * 
+	 * @param clientConfig
+	 * @return
+	 * @throws MalformedObjectNameException
+	 * @throws IOException
+	 */
+	public static JmxClient getJmxClient(JmxClientConfig clientConfig) throws MalformedObjectNameException, IOException {
+		return getJmxClientByConfigId(clientConfig.getId());
+	}
+
+	/**
+	 * TODO: Handle non-existent JMX client or connection closed or whatnot
+	 * 
+	 * @param jmxClientId
+	 * @return
+	 * @throws IOException
+	 * @throws MalformedObjectNameException
+	 */
+	public static JmxClient getJmxClientByConfigId(String jmxClientConfigId) throws MalformedObjectNameException, IOException {
+		JmxClient existingClient = jmxClientCache.get(jmxClientConfigId);
+		if (existingClient != null) {
+			// TODO: Fix possible race conditions between checking for existing client and creating a new one
+			JmxClient client = new JmxClient(clientConfigDao.findClientConfigById(jmxClientConfigId));
+			jmxClientCache.put(jmxClientConfigId, client); // store in cache
+			return client;
+		}
+		return existingClient;
+	}
+
+	public static List<JmxClient> findAllJmxClients() {
+		return new ArrayList<>(jmxClientCache.values());
+	}
+
+	/**
+	 * TODO: Hook onto JVM shutting down probably through a ServletContextListener
+	 * 
+	 * @throws IOException
+	 */
+	public static void destroy() {
+		for (JmxClient client : jmxClientCache.values()) {
+			client.close();
+		}
+	}
+
+	public static JmxService getInstance() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
