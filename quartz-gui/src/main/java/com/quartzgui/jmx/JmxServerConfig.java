@@ -2,7 +2,7 @@ package com.quartzgui.jmx;
 
 import java.util.UUID;
 
-public class JmxClientConfig {
+public class JmxServerConfig {
 	
 	private final String id;
 	private String url;
@@ -12,11 +12,11 @@ public class JmxClientConfig {
 	/**
 	 * Construct an empty client config. Auto generates ID.
 	 */
-	public JmxClientConfig() {
+	public JmxServerConfig() {
 		id = UUID.randomUUID().toString();
 	}
 	
-	public JmxClientConfig(String id) {
+	public JmxServerConfig(String id) {
 		this.id = id;
 	}
 
@@ -64,7 +64,7 @@ public class JmxClientConfig {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		JmxClientConfig other = (JmxClientConfig) obj;
+		JmxServerConfig other = (JmxServerConfig) obj;
 		if (id == null) {
 			if (other.id != null)
 				return false;

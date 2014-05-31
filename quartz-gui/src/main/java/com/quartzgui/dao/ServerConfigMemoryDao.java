@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.quartzgui.jmx.JmxClientConfig;
+import com.quartzgui.jmx.JmxServerConfig;
 
 /**
  * Used primarily for testing
@@ -13,24 +13,24 @@ import com.quartzgui.jmx.JmxClientConfig;
  * @author Seth
  *
  */
-public class ClientConfigMemoryDao implements ClientConfigDao {
+public class ServerConfigMemoryDao implements ServerConfigDao {
 
 	/**In Memory Database**/
-	protected static Map<String, JmxClientConfig> clientConfigs = new ConcurrentHashMap<>();
+	protected static Map<String, JmxServerConfig> clientConfigs = new ConcurrentHashMap<>();
 	
 	@Override
-	public List<JmxClientConfig> findClientConfigs() {
+	public List<JmxServerConfig> findClientConfigs() {
 		return new ArrayList<>(clientConfigs.values());
 	}
 
 	@Override
-	public void createClientConfig(JmxClientConfig config) {
+	public void createClientConfig(JmxServerConfig config) {
 		clientConfigs.put(config.getId(), config);
 		
 	}
 
 	@Override
-	public JmxClientConfig findClientConfigById(String id) {
+	public JmxServerConfig findClientConfigById(String id) {
 		return clientConfigs.get(id);
 	}
 
@@ -40,7 +40,7 @@ public class ClientConfigMemoryDao implements ClientConfigDao {
 	}
 
 	@Override
-	public void updateClientConfig(JmxClientConfig config) {
+	public void updateClientConfig(JmxServerConfig config) {
 		clientConfigs.put(config.getId(), config);
 	}
 

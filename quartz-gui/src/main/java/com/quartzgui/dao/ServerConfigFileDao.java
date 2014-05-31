@@ -2,29 +2,29 @@ package com.quartzgui.dao;
 
 import java.util.List;
 
-import com.quartzgui.jmx.JmxClientConfig;
+import com.quartzgui.jmx.JmxServerConfig;
 
 
-public class ClientConfigFileDao implements ClientConfigDao {
+public class ServerConfigFileDao implements ServerConfigDao {
 	
 	static {
 		//load config file here
 	}
 
 	@Override
-	public List<JmxClientConfig> findClientConfigs() {
+	public List<JmxServerConfig> findClientConfigs() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public void createClientConfig(JmxClientConfig config) {
+	public void createClientConfig(JmxServerConfig config) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public JmxClientConfig findClientConfigById(String id) {
+	public JmxServerConfig findClientConfigById(String id) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -36,7 +36,7 @@ public class ClientConfigFileDao implements ClientConfigDao {
 	}
 
 	@Override
-	public void updateClientConfig(JmxClientConfig config) {
+	public void updateClientConfig(JmxServerConfig config) {
 		// TODO Auto-generated method stub
 		
 	}

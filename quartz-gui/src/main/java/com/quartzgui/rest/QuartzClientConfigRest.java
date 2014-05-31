@@ -4,8 +4,8 @@ import javax.enterprise.context.RequestScoped;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 
-import com.quartzgui.dao.ClientConfigDao;
-import com.quartzgui.dao.ClientConfigMemoryDao;
+import com.quartzgui.dao.ServerConfigDao;
+import com.quartzgui.dao.ServerConfigMemoryDao;
 
 /**
  * TODO: Client config should be changed to "serverConfig" to more accurately reflect what's represented
@@ -17,7 +17,7 @@ import com.quartzgui.dao.ClientConfigMemoryDao;
 public class QuartzClientConfigRest {
 
 	/**TODO: Change this into a singleton and inject maybe**/
-	private ClientConfigDao clientConfigDao = new ClientConfigMemoryDao();
+	private ServerConfigDao clientConfigDao = new ServerConfigMemoryDao();
 	
 	@GET
 	public void findSavedConfigs() {

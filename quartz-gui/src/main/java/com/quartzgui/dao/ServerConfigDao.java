@@ -2,7 +2,7 @@ package com.quartzgui.dao;
 
 import java.util.List;
 
-import com.quartzgui.jmx.JmxClientConfig;
+import com.quartzgui.jmx.JmxServerConfig;
 
 /**
  * Interface for each DAO implementation, for instance SQLDao, FileDao,
@@ -11,7 +11,7 @@ import com.quartzgui.jmx.JmxClientConfig;
  * @author Seth
  * 
  */
-public interface ClientConfigDao {
+public interface ServerConfigDao {
 
 	/**
 	 * Returns all QuartzInstances which contain enough information to connect
@@ -19,13 +19,13 @@ public interface ClientConfigDao {
 	 * 
 	 * @return
 	 */
-	List<JmxClientConfig> findClientConfigs();
+	List<JmxServerConfig> findClientConfigs();
 
-	void createClientConfig(JmxClientConfig config);
+	void createClientConfig(JmxServerConfig config);
 
-	JmxClientConfig findClientConfigById(String id);
+	JmxServerConfig findClientConfigById(String id);
 
 	void deleteClientConfigById(String id);
 
-	void updateClientConfig(JmxClientConfig config);
+	void updateClientConfig(JmxServerConfig config);
 }

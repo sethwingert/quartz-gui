@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Connects to one Quartz JMX Server. Each server can contain many schedulers, which are
  * represented by a list of {@link QuartzGuiMBeanScheduler}.  Each JmxClient is associated with one
- * {@link JmxClientConfig}.
+ * {@link JmxServerConfig}.
  * 
  * @author Seth Wingert
  * 
@@ -31,11 +31,11 @@ public class JmxClient implements Closeable {
 	private static final Logger logger = LoggerFactory.getLogger(JmxClient.class);
 
 	protected final String id;
-	protected JmxClientConfig config;
+	protected JmxServerConfig config;
 	protected JMXConnector jmxConnector;
 	protected List<QuartzGuiMBeanScheduler> schedulers;
 
-	public JmxClient(JmxClientConfig config) throws IOException, MalformedObjectNameException {
+	public JmxClient(JmxServerConfig config) throws IOException, MalformedObjectNameException {
 		id = config.getId(); //same ID as config file
 		// StringBuffer stringBuffer = new
 		// StringBuffer().append("service:jmx:remoting-jmx://")
@@ -73,11 +73,11 @@ public class JmxClient implements Closeable {
 		this.schedulers = schedulers;
 	}
 
-	public JmxClientConfig getConfig() {
+	public JmxServerConfig getConfig() {
 		return config;
 	}
 
-	public void setConfig(JmxClientConfig config) {
+	public void setConfig(JmxServerConfig config) {
 		this.config = config;
 	}
 	

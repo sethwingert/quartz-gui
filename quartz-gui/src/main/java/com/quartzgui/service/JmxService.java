@@ -11,10 +11,10 @@ import javax.management.MalformedObjectNameException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.quartzgui.dao.ClientConfigDao;
-import com.quartzgui.dao.ClientConfigMemoryDao;
+import com.quartzgui.dao.ServerConfigDao;
+import com.quartzgui.dao.ServerConfigMemoryDao;
 import com.quartzgui.jmx.JmxClient;
-import com.quartzgui.jmx.JmxClientConfig;
+import com.quartzgui.jmx.JmxServerConfig;
 
 /**
  * Application level service with static methods. Use this to initialize, create, and retrieve JMX Clients.
@@ -30,13 +30,13 @@ public class JmxService {
 	/** JmxClients are stored in memory so no need to connect to JMX server with every request **/
 	private static final Map<String, JmxClient> jmxClientCache = new ConcurrentHashMap<String, JmxClient>();
 
-	private static final ClientConfigDao clientConfigDao;
+	private static final ServerConfigDao serverConfigDao;
 
 	static {
 		// Use properties file to determine which configDao to get**/
-		clientConfigDao = new ClientConfigMemoryDao();
+		serverConfigDao = new ServerConfigMemoryDao();
 		// load up prestored clients
-		for (JmxClientConfig clientConfig : clientConfigDao.findClientConfigs()) {
+		for (JmxServerConfig clientConfig : serverConfigDao.findClientConfigs()) {
 			try {
 				getJmxClient(clientConfig);
 			} catch (MalformedObjectNameException | IOException e) {
@@ -54,7 +54,7 @@ public class JmxService {
 	 * @throws MalformedObjectNameException
 	 * @throws IOException
 	 */
-	public static JmxClient getJmxClient(JmxClientConfig clientConfig) throws MalformedObjectNameException, IOException {
+	public static JmxClient getJmxClient(JmxServerConfig clientConfig) throws MalformedObjectNameException, IOException {
 		return getJmxClientByConfigId(clientConfig.getId());
 	}
 
@@ -70,7 +70,7 @@ public class JmxService {
 		JmxClient existingClient = jmxClientCache.get(jmxClientConfigId);
 		if (existingClient != null) {
 			// TODO: Fix possible race conditions between checking for existing client and creating a new one
-			JmxClient client = new JmxClient(clientConfigDao.findClientConfigById(jmxClientConfigId));
+			JmxClient client = new JmxClient(serverConfigDao.findClientConfigById(jmxClientConfigId));
 			jmxClientCache.put(jmxClientConfigId, client); // store in cache
 			return client;
 		}

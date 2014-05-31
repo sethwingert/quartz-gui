@@ -7,7 +7,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 
 import com.quartzgui.jmx.JmxClient;
-import com.quartzgui.jmx.JmxClientConfig;
+import com.quartzgui.jmx.JmxServerConfig;
 import com.quartzgui.service.JmxService;
 
 /**
@@ -36,7 +36,7 @@ public class QuartzSchedulerRest {
 	 * @throws IOException
 	 */
 	@GET
-	public void findAllSchedulers(JmxClientConfig clientConfig) throws MalformedObjectNameException, IOException {
+	public void findAllSchedulers(JmxServerConfig clientConfig) throws MalformedObjectNameException, IOException {
 		JmxClient jmxClient = jmxService.getJmxClient(clientConfig);
 		//return list of schedulers
 		jmxClient.getSchedulers();  //needs to have a client config ID with it
