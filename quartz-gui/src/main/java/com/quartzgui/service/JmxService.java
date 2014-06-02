@@ -28,34 +28,41 @@ public class JmxService {
 	Logger logger = LoggerFactory.getLogger(JmxService.class);
 
 	/** JmxClients are stored in memory so no need to connect to JMX server with every request **/
-	private static final Map<String, JmxClient> jmxClientCache = new ConcurrentHashMap<String, JmxClient>();
+	private final Map<String, JmxClient> jmxClientCache = new ConcurrentHashMap<String, JmxClient>();
 
-	private static final ServerConfigDao serverConfigDao;
-
-	static {
+	private final ServerConfigDao serverConfigDao;
+	
+	private static JmxService singletonJmxService = new JmxService();
+	
+	//make protected to defeat instnatiation/subclassing except by those in same package
+	protected JmxService() {
 		// Use properties file to determine which configDao to get**/
-		serverConfigDao = new ServerConfigMemoryDao();
-		// load up prestored clients
-		for (JmxServerConfig clientConfig : serverConfigDao.findClientConfigs()) {
-			try {
-				getJmxClient(clientConfig);
-			} catch (MalformedObjectNameException | IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
+				serverConfigDao = new ServerConfigMemoryDao();
+				// load up prestored clients
+				for (JmxServerConfig clientConfig : serverConfigDao.findClientConfigs()) {
+					try {
+						getJmxClient(clientConfig);
+					} catch (MalformedObjectNameException | IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+	}
+	
+	public static JmxService getInstance() {
+		return singletonJmxService;
 	}
 
 	/**
 	 * Gets a JMX client from cache or create one and store in cache if it doesn't exist.
 	 * 
-	 * @param clientConfig
+	 * @param serverConfig
 	 * @return
 	 * @throws MalformedObjectNameException
 	 * @throws IOException
 	 */
-	public static JmxClient getJmxClient(JmxServerConfig clientConfig) throws MalformedObjectNameException, IOException {
-		return getJmxClientByConfigId(clientConfig.getId());
+	public JmxClient getJmxClient(JmxServerConfig serverConfig) throws MalformedObjectNameException, IOException {
+		return getJmxClientByConfigId(serverConfig.getId());
 	}
 
 	/**
@@ -66,18 +73,17 @@ public class JmxService {
 	 * @throws IOException
 	 * @throws MalformedObjectNameException
 	 */
-	public static JmxClient getJmxClientByConfigId(String jmxClientConfigId) throws MalformedObjectNameException, IOException {
-		JmxClient existingClient = jmxClientCache.get(jmxClientConfigId);
-		if (existingClient != null) {
-			// TODO: Fix possible race conditions between checking for existing client and creating a new one
-			JmxClient client = new JmxClient(serverConfigDao.findClientConfigById(jmxClientConfigId));
-			jmxClientCache.put(jmxClientConfigId, client); // store in cache
+	public synchronized JmxClient getJmxClientByConfigId(String jmxServerId) throws MalformedObjectNameException, IOException {
+		JmxClient existingClient = jmxClientCache.get(jmxServerId);
+		if (existingClient == null) {
+			JmxClient client = new JmxClient(serverConfigDao.findClientConfigById(jmxServerId));
+			jmxClientCache.put(jmxServerId, client); // store in cache
 			return client;
 		}
 		return existingClient;
 	}
 
-	public static List<JmxClient> findAllJmxClients() {
+	public List<JmxClient> findAllJmxClients() {
 		return new ArrayList<>(jmxClientCache.values());
 	}
 
@@ -86,14 +92,9 @@ public class JmxService {
 	 * 
 	 * @throws IOException
 	 */
-	public static void destroy() {
+	public void destroy() {
 		for (JmxClient client : jmxClientCache.values()) {
 			client.close();
 		}
-	}
-
-	public static JmxService getInstance() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 }
