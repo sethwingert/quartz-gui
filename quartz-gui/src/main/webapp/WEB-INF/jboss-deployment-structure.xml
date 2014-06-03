@@ -1,21 +1,32 @@
 <jboss-deployment-structure>
-    <deployment>
-        <dependencies>
-        	<!-- enables special JMX protocols when deploying to JBoss (tested on 6.1 EAP) -->
-        	<module name="org.jboss.remoting-jmx" services="import"/>
-        	<module name="org.jboss.remoting3" />
-        	<module name="org.jboss.logging" />
-        	<module name="org.jboss.xnio" />
-        	<module name="org.jboss.xnio.nio" />
-        	<module name="org.jboss.sasl" />
-        	<module name="org.jboss.marshalling" />
-        	<module name="org.jboss.marshalling.river" />
-        	<module name="org.jboss.as.cli" />
-        	<module name="org.jboss.staxmapper" />
-        	<module name="org.jboss.as.protocol" />
-        	<module name="org.jboss.dmr" />
-        	<module name="org.jboss.as.controller-client" />
-        	<module name="org.jboss.threads" />
-        </dependencies>
-    </deployment>
+	<deployment>
+		<dependencies>
+			<!-- enables special JMX protocols when deploying to JBoss (tested on 
+				6.1 EAP) -->
+			<module name="org.jboss.remoting-jmx" services="import" />
+			<module name="org.jboss.remoting3" />
+			<module name="org.jboss.logging" />
+			<module name="org.jboss.xnio" />
+			<module name="org.jboss.xnio.nio" />
+			<module name="org.jboss.sasl" />
+			<module name="org.jboss.marshalling" />
+			<module name="org.jboss.marshalling.river" />
+			<module name="org.jboss.as.cli" />
+			<module name="org.jboss.staxmapper" />
+			<module name="org.jboss.as.protocol" />
+			<module name="org.jboss.dmr" />
+			<module name="org.jboss.as.controller-client" />
+			<module name="org.jboss.threads" />
+		</dependencies>
+		<exclusions>
+			<module name="org.jboss.resteasy.resteasy-atom-provider" />
+			<module name="org.jboss.resteasy.resteasy-cdi" />
+			<module name="org.jboss.resteasy.resteasy-jaxrs" />
+			<module name="org.jboss.resteasy.resteasy-jaxb-provider" />
+			<module name="org.jboss.resteasy.resteasy-jackson-provider" />
+			<module name="org.jboss.resteasy.resteasy-jsapi" />
+			<module name="org.jboss.resteasy.resteasy-multipart-provider" />
+			<module name="org.jboss.resteasy.async-http-servlet-30" />
+		</exclusions>
+	</deployment>
 </jboss-deployment-structure>
