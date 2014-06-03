@@ -9,8 +9,10 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+
 import com.quartzgui.dao.ServerConfigDao;
-import com.quartzgui.dao.ServerConfigMemoryDao;
 import com.quartzgui.jmx.JmxServerConfig;
 
 /**
@@ -21,8 +23,9 @@ import com.quartzgui.jmx.JmxServerConfig;
 @RequestScoped
 public class QuartzServerRest {
 
-	/**TODO: Change this into a singleton and inject maybe**/
-	private ServerConfigDao serverConfigDao = new ServerConfigMemoryDao();
+	@Autowired
+	@Qualifier("serverConfigMemoryDao") 	//TODO: REad from proeprties file instead
+	private ServerConfigDao serverConfigDao;
 	
 	@GET
 	public List<JmxServerConfig> findSavedConfigs() {
@@ -37,7 +40,7 @@ public class QuartzServerRest {
 	
 	@POST
 	public void createNewConfig(JmxServerConfig config) {
-		serverConfigDao.createServerConfig(config);
+		serverConfigDao.saveServerConfig(config);
 	}
 	
 	@DELETE

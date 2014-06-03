@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.springframework.stereotype.Repository;
+
 import com.quartzgui.jmx.JmxServerConfig;
 
 /**
@@ -13,6 +15,7 @@ import com.quartzgui.jmx.JmxServerConfig;
  * @author Seth
  *
  */
+@Repository("serverConfigMemoryDao")
 public class ServerConfigMemoryDao implements ServerConfigDao {
 
 	/**In Memory Database**/
@@ -24,7 +27,7 @@ public class ServerConfigMemoryDao implements ServerConfigDao {
 	}
 
 	@Override
-	public void createServerConfig(JmxServerConfig config) {
+	public void saveServerConfig(JmxServerConfig config) {
 		clientConfigs.put(config.getId(), config);
 		
 	}

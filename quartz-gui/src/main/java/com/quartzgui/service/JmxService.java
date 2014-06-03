@@ -39,12 +39,11 @@ public class JmxService {
 		// Use properties file to determine which configDao to get**/
 		serverConfigDao = new ServerConfigMemoryDao();
 		// load up prestored clients
-		for (JmxServerConfig clientConfig : serverConfigDao.findServerConfigs()) {
+		for (JmxServerConfig serverConfig : serverConfigDao.findServerConfigs()) {
 			try {
-				getJmxClient(clientConfig);
+				getJmxClient(serverConfig);
 			} catch (MalformedObjectNameException | IOException | SchedulerException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.error("Problem creating a JMX client with config file [{}]", serverConfig, e);
 			}
 		}
 	}

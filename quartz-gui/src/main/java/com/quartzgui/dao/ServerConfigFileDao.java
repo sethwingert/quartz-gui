@@ -2,9 +2,11 @@ package com.quartzgui.dao;
 
 import java.util.List;
 
+import org.springframework.stereotype.Repository;
+
 import com.quartzgui.jmx.JmxServerConfig;
 
-
+@Repository("serverConfigFileDao")
 public class ServerConfigFileDao implements ServerConfigDao {
 	
 	static {
@@ -18,7 +20,7 @@ public class ServerConfigFileDao implements ServerConfigDao {
 	}
 
 	@Override
-	public void createServerConfig(JmxServerConfig config) {
+	public void saveServerConfig(JmxServerConfig config) {
 		// TODO Auto-generated method stub
 		
 	}
