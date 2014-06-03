@@ -12,31 +12,31 @@ public class ServerConfigFileDao implements ServerConfigDao {
 	}
 
 	@Override
-	public List<JmxServerConfig> findClientConfigs() {
+	public List<JmxServerConfig> findServerConfigs() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public void createClientConfig(JmxServerConfig config) {
+	public void createServerConfig(JmxServerConfig config) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public JmxServerConfig findClientConfigById(String id) {
+	public JmxServerConfig findServerConfigById(String id) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public void deleteClientConfigById(String id) {
+	public void deleteServerConfigById(String id) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void updateClientConfig(JmxServerConfig config) {
+	public void updateServerConfig(JmxServerConfig config) {
 		// TODO Auto-generated method stub
 		
 	}

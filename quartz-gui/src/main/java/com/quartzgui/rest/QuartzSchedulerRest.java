@@ -5,9 +5,11 @@ import java.io.IOException;
 import javax.management.MalformedObjectNameException;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+
+import org.quartz.SchedulerException;
 
 import com.quartzgui.jmx.JmxClient;
-import com.quartzgui.jmx.JmxServerConfig;
 import com.quartzgui.service.JmxService;
 
 /**
@@ -17,14 +19,20 @@ import com.quartzgui.service.JmxService;
  * @author sw8840
  *
  */
-@Path("/scheduler")
 public class QuartzSchedulerRest {
 	
 	JmxService jmxService = JmxService.getInstance();
+	
+	String serverId;
+
+	public QuartzSchedulerRest(String serverId) {
+		this.serverId = serverId;
+	}
 
 	@GET
-	public void findAllSchedulers(String jmxClientConfigId) throws MalformedObjectNameException, IOException {
-		JmxClient jmxClient = jmxService.getJmxClientByConfigId(jmxClientConfigId);
+	public void findAllSchedulers() throws SchedulerException {
+		System.out.println("Calling find all schedulers for serverId: " + serverId);
+		JmxClient jmxClient = jmxService.getJmxClientByConfigId(serverId);
 		jmxClient.getSchedulers(); //there will be a scheduler ID for each one, so user can use that + clientConfigId for subsequent requests
 	}
 	
@@ -34,10 +42,12 @@ public class QuartzSchedulerRest {
 	 * @param clientConfig
 	 * @throws MalformedObjectNameException
 	 * @throws IOException
+	 * @throws SchedulerException 
 	 */
 	@GET
-	public void findAllSchedulers(JmxServerConfig clientConfig) throws MalformedObjectNameException, IOException {
-		JmxClient jmxClient = jmxService.getJmxClient(clientConfig);
+	@Path("/{id}")
+	public void findSchedulerById(@PathParam("id") String schedulerId) throws SchedulerException {
+		JmxClient jmxClient = jmxService.getJmxClientByConfigId(serverId);
 		//return list of schedulers
 		jmxClient.getSchedulers();  //needs to have a client config ID with it
 	}

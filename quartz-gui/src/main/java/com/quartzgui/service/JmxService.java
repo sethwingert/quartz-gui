@@ -8,6 +8,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.management.MalformedObjectNameException;
 
+import org.quartz.SchedulerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,10 +18,9 @@ import com.quartzgui.jmx.JmxClient;
 import com.quartzgui.jmx.JmxServerConfig;
 
 /**
- * Application level service with static methods. Use this to initialize, create, and retrieve JMX Clients.
- * Possibly call a getInstance() method on this singleton instead of making everything static.
+ * Application level singleton. Use this to initialize, create, and retrieve JMX Clients.
  * 
- * @author sw8840
+ * @author Seth
  * 
  */
 public class JmxService {
@@ -37,16 +37,16 @@ public class JmxService {
 	//make protected to defeat instnatiation/subclassing except by those in same package
 	protected JmxService() {
 		// Use properties file to determine which configDao to get**/
-				serverConfigDao = new ServerConfigMemoryDao();
-				// load up prestored clients
-				for (JmxServerConfig clientConfig : serverConfigDao.findClientConfigs()) {
-					try {
-						getJmxClient(clientConfig);
-					} catch (MalformedObjectNameException | IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
+		serverConfigDao = new ServerConfigMemoryDao();
+		// load up prestored clients
+		for (JmxServerConfig clientConfig : serverConfigDao.findServerConfigs()) {
+			try {
+				getJmxClient(clientConfig);
+			} catch (MalformedObjectNameException | IOException | SchedulerException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	public static JmxService getInstance() {
@@ -60,8 +60,9 @@ public class JmxService {
 	 * @return
 	 * @throws MalformedObjectNameException
 	 * @throws IOException
+	 * @throws SchedulerException 
 	 */
-	public JmxClient getJmxClient(JmxServerConfig serverConfig) throws MalformedObjectNameException, IOException {
+	public JmxClient getJmxClient(JmxServerConfig serverConfig) throws MalformedObjectNameException, IOException, SchedulerException {
 		return getJmxClientByConfigId(serverConfig.getId());
 	}
 
@@ -72,11 +73,16 @@ public class JmxService {
 	 * @return
 	 * @throws IOException
 	 * @throws MalformedObjectNameException
+	 * @throws SchedulerException 
 	 */
-	public synchronized JmxClient getJmxClientByConfigId(String jmxServerId) throws MalformedObjectNameException, IOException {
+	public synchronized JmxClient getJmxClientByConfigId(String jmxServerId) throws SchedulerException {
 		JmxClient existingClient = jmxClientCache.get(jmxServerId);
 		if (existingClient == null) {
-			JmxClient client = new JmxClient(serverConfigDao.findClientConfigById(jmxServerId));
+			JmxServerConfig serverConfig = serverConfigDao.findServerConfigById(jmxServerId);
+			if (serverConfig == null) {
+				throw new SchedulerException("Cannot find server. Please save a server configuration first.");
+			}
+			JmxClient client = new JmxClient(serverConfig);
 			jmxClientCache.put(jmxServerId, client); // store in cache
 			return client;
 		}

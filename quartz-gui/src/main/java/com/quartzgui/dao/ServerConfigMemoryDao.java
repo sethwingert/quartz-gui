@@ -19,28 +19,28 @@ public class ServerConfigMemoryDao implements ServerConfigDao {
 	protected static Map<String, JmxServerConfig> clientConfigs = new ConcurrentHashMap<>();
 	
 	@Override
-	public List<JmxServerConfig> findClientConfigs() {
+	public List<JmxServerConfig> findServerConfigs() {
 		return new ArrayList<>(clientConfigs.values());
 	}
 
 	@Override
-	public void createClientConfig(JmxServerConfig config) {
+	public void createServerConfig(JmxServerConfig config) {
 		clientConfigs.put(config.getId(), config);
 		
 	}
 
 	@Override
-	public JmxServerConfig findClientConfigById(String id) {
+	public JmxServerConfig findServerConfigById(String id) {
 		return clientConfigs.get(id);
 	}
 
 	@Override
-	public void deleteClientConfigById(String id) {
+	public void deleteServerConfigById(String id) {
 		clientConfigs.remove(id);
 	}
 
 	@Override
-	public void updateClientConfig(JmxServerConfig config) {
+	public void updateServerConfig(JmxServerConfig config) {
 		clientConfigs.put(config.getId(), config);
 	}
 

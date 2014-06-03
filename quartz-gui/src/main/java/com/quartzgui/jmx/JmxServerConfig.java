@@ -1,16 +1,20 @@
 package com.quartzgui.jmx;
 
+import java.io.Serializable;
 import java.util.UUID;
 
-public class JmxServerConfig {
+public class JmxServerConfig implements Serializable {
+	
+	private static final long serialVersionUID = 1L;
 	
 	private final String id;
 	private String url;
 	private String username;
 	private String password;
+	private Boolean local = Boolean.FALSE;
 	
 	/**
-	 * Construct an empty client config. Auto generates ID.
+	 * Construct an empty server config. Auto generates ID.
 	 */
 	public JmxServerConfig() {
 		id = UUID.randomUUID().toString();
@@ -46,6 +50,14 @@ public class JmxServerConfig {
 
 	public String getId() {
 		return id;
+	}
+
+	public Boolean getLocal() {
+		return local;
+	}
+
+	public void setLocal(Boolean local) {
+		this.local = local;
 	}
 
 	@Override

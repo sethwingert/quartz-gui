@@ -2,9 +2,9 @@ package com.quartzgui.jmx;
 
 import java.io.Closeable;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.lang.management.ManagementFactory;
 import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -15,6 +15,7 @@ import javax.management.remote.JMXConnector;
 import javax.management.remote.JMXConnectorFactory;
 import javax.management.remote.JMXServiceURL;
 
+import org.quartz.SchedulerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,44 +34,65 @@ public class JmxClient implements Closeable {
 	protected final String id;
 	protected JmxServerConfig config;
 	protected JMXConnector jmxConnector;
-	protected List<QuartzGuiMBeanScheduler> schedulers;
+	protected Map<String, QuartzGuiMBeanScheduler> schedulers;
 
-	public JmxClient(JmxServerConfig config) throws IOException, MalformedObjectNameException {
+	/**
+	 * Uses config file to connect to remote JMX server
+	 * 
+	 * @param config
+	 * @throws IOException
+	 * @throws MalformedObjectNameException
+	 * @throws SchedulerException 
+	 */
+	public JmxClient(JmxServerConfig config) throws SchedulerException {
+		if (config == null) {
+			throw new SchedulerException("Configuration cannot be empty");
+		}
 		id = config.getId(); //same ID as config file
 		// StringBuffer stringBuffer = new
 		// StringBuffer().append("service:jmx:remoting-jmx://")
 		// .append("localhost").append(":").append("4447");
 		this.config = config;
-		logger.info("Attempting to connect to [{}] with username [{}] and password [{}]", config.getUrl(),
-				config.getUsername(), config.getPassword());
-		JMXServiceURL jmxServiceUrl = new JMXServiceURL(config.getUrl());
-		Map<String, String[]> env = new HashMap<String, String[]>();
-		env.put(JMXConnector.CREDENTIALS, new String[] { config.getUsername(), config.getPassword() });
-		jmxConnector = JMXConnectorFactory.connect(jmxServiceUrl, env);
-		MBeanServerConnection connection = jmxConnector.getMBeanServerConnection();
-		ObjectName mBeanName = new ObjectName("quartz:type=QuartzScheduler,*");
-		Set<ObjectName> names = connection.queryNames(mBeanName, null);
-		schedulers = new ArrayList<>();
+		MBeanServerConnection connection = null;
+		Set<ObjectName> names = new HashSet<>();
+		try {
+			if (config.getLocal()!=null && config.getLocal()) {
+				connection = ManagementFactory.getPlatformMBeanServer();  //local server
+			} else {
+				logger.info("Attempting to connect to [{}] with username [{}] and password [{}]", config.getUrl(),
+						config.getUsername(), config.getPassword());
+				JMXServiceURL jmxServiceUrl = new JMXServiceURL(config.getUrl());
+				Map<String, String[]> env = new HashMap<String, String[]>();
+				env.put(JMXConnector.CREDENTIALS, new String[] { config.getUsername(), config.getPassword() });
+				jmxConnector = JMXConnectorFactory.connect(jmxServiceUrl, env);
+				connection = jmxConnector.getMBeanServerConnection();
+			}
+			ObjectName mBeanName = new ObjectName("quartz:type=QuartzScheduler,*");
+			names = connection.queryNames(mBeanName, null);
+		} catch (MalformedObjectNameException | IOException e) {
+			throw new SchedulerException(e);
+		}
+		schedulers = new HashMap<>();
 		for (ObjectName name : names) {
-			schedulers.add(new QuartzGuiMBeanScheduler(connection, name));
+			QuartzGuiMBeanScheduler quartzScheduler = new QuartzGuiMBeanScheduler(connection, name);
+			schedulers.put(quartzScheduler.getSchedulerInstanceId(), quartzScheduler);
 		}
 	}
 
 	@Override
 	public void close() {
+		if (jmxConnector == null) {
+			return;
+		}
 		try {
 			jmxConnector.close();
 		} catch (IOException e) {
 			logger.warn("Unable to close connection to JMX",e);
 		}
 	}
-
-	public List<QuartzGuiMBeanScheduler> getSchedulers() {
-		return schedulers;
-	}
-
-	public void setSchedulers(List<QuartzGuiMBeanScheduler> schedulers) {
-		this.schedulers = schedulers;
+	
+	public QuartzGuiMBeanScheduler getSchedulerById(String instanceId) {
+		return schedulers.get(instanceId);
 	}
 
 	public JmxServerConfig getConfig() {
@@ -108,5 +130,13 @@ public class JmxClient implements Closeable {
 		} else if (!id.equals(other.id))
 			return false;
 		return true;
+	}
+
+	public Map<String, QuartzGuiMBeanScheduler> getSchedulers() {
+		return schedulers;
+	}
+
+	public void setSchedulers(Map<String, QuartzGuiMBeanScheduler> schedulers) {
+		this.schedulers = schedulers;
 	}
 }

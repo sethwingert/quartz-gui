@@ -5,20 +5,15 @@ import static org.junit.Assert.assertTrue;
 import static org.quartz.JobBuilder.newJob;
 import static org.quartz.TriggerBuilder.newTrigger;
 
-import java.lang.management.ManagementFactory;
-
-import javax.management.MBeanServerConnection;
-import javax.management.ObjectName;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.quartz.JobDetail;
 import org.quartz.SchedulerException;
 import org.quartz.SimpleScheduleBuilder;
 import org.quartz.Trigger;
-import org.quartz.core.QuartzSchedulerResources;
 
-import com.quartzgui.jmx.QuartzGuiMBeanScheduler;
+import com.quartzgui.jmx.JmxClient;
+import com.quartzgui.jmx.JmxServerConfig;
 
 public class BasicJobTest extends BaseQuartzTest {
 
@@ -48,11 +43,13 @@ public class BasicJobTest extends BaseQuartzTest {
 	}
 	
 	@Test
-	public void testJmxAccess() throws Exception {
-		String objectName = QuartzSchedulerResources.generateJMXObjectName(scheduler.getSchedulerName(), scheduler.getSchedulerInstanceId());
-		MBeanServerConnection mBeanServer = ManagementFactory.getPlatformMBeanServer();  //local server
-		QuartzGuiMBeanScheduler remoteScheduler = new QuartzGuiMBeanScheduler(mBeanServer, new ObjectName(objectName));
-		JobDetail remoteJobDetail = remoteScheduler.getJobDetail(helloWorldJob.getKey());
-		assertEquals("job1", remoteJobDetail.getKey().getName());
+	public void testLocalJmxAccess() throws Exception {
+		JmxServerConfig config = new JmxServerConfig();
+		config.setLocal(true);
+		JmxClient client = new JmxClient(config);
+		assertEquals(1, client.getSchedulers().size());
+		JobDetail remoteJobDetail = client.getSchedulers().values().iterator().next().getJobDetail(helloWorldJob.getKey());
+		assertEquals("job1",remoteJobDetail.getKey().getName());
+		client.close();
 	}
 }

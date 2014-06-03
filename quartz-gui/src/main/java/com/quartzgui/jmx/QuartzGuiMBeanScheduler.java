@@ -64,5 +64,4 @@ public class QuartzGuiMBeanScheduler extends RemoteMBeanScheduler {
 			return "Scheduler exception thrown when trying to produce toString()";
 		}
 	}
-
 }

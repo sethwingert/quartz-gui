@@ -19,13 +19,13 @@ public interface ServerConfigDao {
 	 * 
 	 * @return
 	 */
-	List<JmxServerConfig> findClientConfigs();
+	List<JmxServerConfig> findServerConfigs();
 
-	void createClientConfig(JmxServerConfig config);
+	void createServerConfig(JmxServerConfig config);
 
-	JmxServerConfig findClientConfigById(String id);
+	JmxServerConfig findServerConfigById(String id);
 
-	void deleteClientConfigById(String id);
+	void deleteServerConfigById(String id);
 
-	void updateClientConfig(JmxServerConfig config);
+	void updateServerConfig(JmxServerConfig config);
 }
