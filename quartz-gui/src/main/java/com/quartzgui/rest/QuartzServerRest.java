@@ -2,15 +2,17 @@ package com.quartzgui.rest;
 
 import java.util.List;
 
-import javax.enterprise.context.RequestScoped;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 
 import com.quartzgui.dao.ServerConfigDao;
 import com.quartzgui.jmx.JmxServerConfig;
@@ -20,7 +22,7 @@ import com.quartzgui.jmx.JmxServerConfig;
  *
  */
 @Path("/server")
-@RequestScoped
+@Component
 public class QuartzServerRest {
 
 	@Autowired
@@ -28,6 +30,7 @@ public class QuartzServerRest {
 	private ServerConfigDao serverConfigDao;
 	
 	@GET
+	@Produces(MediaType.APPLICATION_JSON)
 	public List<JmxServerConfig> findSavedConfigs() {
 		/**Be sure not to list username/password**/
 		List<JmxServerConfig> serverConfigs = serverConfigDao.findServerConfigs();
