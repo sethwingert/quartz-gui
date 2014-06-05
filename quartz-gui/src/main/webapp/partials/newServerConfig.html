@@ -1,0 +1,34 @@
+<h2>Quartz Server Configuration</h2>
+<form>
+<table>
+<tr>
+	<th>Quartz Location</th>
+	<td>
+		<select>
+			<option value="local">Local</option>
+			<option value="remote" selected="selected">Remote JMX</option>
+		</select>
+	</td>
+</tr>
+<tbody class="remote">
+<tr>
+	<th>JMX Server URL:</th>
+	<td><input type="text" size="50" name="jmxUrl"/></td>
+</tr>
+<tr>
+	<th>Username:</th>
+	<td><input type="text" name="username"/></td>
+</tr>
+<tr>
+	<th>Password:</th>
+	<td><input type="password" name="password"/></td>
+</tr>
+<tr>
+	<td></td>
+	<td>
+		<input type="submit" value="Save"/>
+	</td>
+</tr>
+</tbody>
+</table>
+</form>
