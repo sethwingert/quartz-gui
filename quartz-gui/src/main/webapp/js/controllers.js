@@ -9,6 +9,10 @@ angular.module('myApp.controllers', [])
   .controller('MyCtrl2', [function() {
 
   }])
-  .controller('ServerConfigController', [function(){
-	  
+  .controller('ServerConfigController', ['$scope', function($scope){
+	  $scope.config = {
+	    location: "remote"  //default location
+	  };
+	  $scope.submit = function(config) {
+	  };
   }]);

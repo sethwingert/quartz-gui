@@ -1,1 +1,1 @@
-{"ide":{"scriptPaths":[{"path":"webapp\/js","type":"FOLDER"}]},"plugins":{"angular":"..\/"},"libs":["browser","ecma5"]}
+{"ide":{"scriptPaths":[{"type":"FOLDER","path":"src/main/webapp/js"}]},"plugins":{"angular":"../"},"libs":["browser","ecma5"]}

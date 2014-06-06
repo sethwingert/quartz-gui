@@ -1,27 +1,27 @@
 <h2>Quartz Server Configuration</h2>
-<form>
+<form ng-submit="submit(config)">
 <table>
 <tr>
 	<th>Quartz Location</th>
 	<td>
-		<select>
+		<select ng-model="config.location">
 			<option value="local">Local</option>
-			<option value="remote" selected="selected">Remote JMX</option>
+			<option value="remote">Remote JMX</option>
 		</select>
 	</td>
 </tr>
 <tbody class="remote">
 <tr>
 	<th>JMX Server URL:</th>
-	<td><input type="text" size="50" name="jmxUrl"/></td>
+	<td><input type="text" size="50" ng-model="config.jmxUrl"/></td>
 </tr>
 <tr>
 	<th>Username:</th>
-	<td><input type="text" name="username"/></td>
+	<td><input type="text" ng-model="config.username"/></td>
 </tr>
 <tr>
 	<th>Password:</th>
-	<td><input type="password" name="password"/></td>
+	<td><input type="password" ng-model="config.password"/></td>
 </tr>
 <tr>
 	<td></td>
