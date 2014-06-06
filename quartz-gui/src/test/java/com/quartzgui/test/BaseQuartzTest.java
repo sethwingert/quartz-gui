@@ -12,7 +12,7 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(loader=AnnotationConfigContextLoader.class)
-public class BaseQuartzTest {
+public abstract class BaseQuartzTest {
 
 	protected Scheduler scheduler;
 	

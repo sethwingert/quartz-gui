@@ -20,8 +20,9 @@ public class ServerConfigFileDao implements ServerConfigDao {
 	}
 
 	@Override
-	public void saveServerConfig(JmxServerConfig config) {
+	public JmxServerConfig saveServerConfig(JmxServerConfig config) {
 		// TODO Auto-generated method stub
+		return null;
 		
 	}
 

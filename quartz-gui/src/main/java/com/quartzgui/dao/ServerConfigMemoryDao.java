@@ -27,8 +27,12 @@ public class ServerConfigMemoryDao implements ServerConfigDao {
 	}
 
 	@Override
-	public void saveServerConfig(JmxServerConfig config) {
+	public JmxServerConfig saveServerConfig(JmxServerConfig config) {
+		if (config.getId() == null || "".equals(config.getId())) {
+			config.generateId();
+		}
 		clientConfigs.put(config.getId(), config);
+		return config;
 		
 	}
 

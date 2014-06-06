@@ -21,7 +21,7 @@ public interface ServerConfigDao {
 	 */
 	List<JmxServerConfig> findServerConfigs();
 
-	void saveServerConfig(JmxServerConfig config);
+	JmxServerConfig saveServerConfig(JmxServerConfig config);
 
 	JmxServerConfig findServerConfigById(String id);
 

@@ -6,6 +6,8 @@ import javax.management.MalformedObjectNameException;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 
 import org.quartz.SchedulerException;
 
@@ -16,7 +18,7 @@ import com.quartzgui.service.JmxService;
  * Get schedulers for each clientConfig
  * TODO: Path should be something like <code>/rest/server/1234/scheduler/1/job/3</code>
  * or <code>/rest/server/1234/scheduler/1/trigger/1</code>
- * @author sw8840
+ * @author Seth
  *
  */
 public class QuartzSchedulerRest {
@@ -30,6 +32,7 @@ public class QuartzSchedulerRest {
 	}
 
 	@GET
+	@Produces(MediaType.APPLICATION_JSON)
 	public void findAllSchedulers() throws SchedulerException {
 		System.out.println("Calling find all schedulers for serverId: " + serverId);
 		JmxClient jmxClient = jmxService.getJmxClientByConfigId(serverId);
@@ -46,6 +49,7 @@ public class QuartzSchedulerRest {
 	 */
 	@GET
 	@Path("/{id}")
+	@Produces(MediaType.APPLICATION_JSON)
 	public void findSchedulerById(@PathParam("id") String schedulerId) throws SchedulerException {
 		JmxClient jmxClient = jmxService.getJmxClientByConfigId(serverId);
 		//return list of schedulers

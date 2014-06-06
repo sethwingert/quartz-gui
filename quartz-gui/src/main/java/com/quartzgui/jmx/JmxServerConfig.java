@@ -7,7 +7,7 @@ public class JmxServerConfig implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	
-	private final String id;
+	private String id;
 	private String url;
 	private String username;
 	private String password;
@@ -17,7 +17,7 @@ public class JmxServerConfig implements Serializable {
 	 * Construct an empty server config. Auto generates ID.
 	 */
 	public JmxServerConfig() {
-		id = UUID.randomUUID().toString();
+		generateId();
 	}
 	
 	public JmxServerConfig(String id) {
@@ -83,6 +83,10 @@ public class JmxServerConfig implements Serializable {
 		} else if (!id.equals(other.id))
 			return false;
 		return true;
+	}
+
+	public void generateId() {
+		id = UUID.randomUUID().toString();
 	}
 
 }

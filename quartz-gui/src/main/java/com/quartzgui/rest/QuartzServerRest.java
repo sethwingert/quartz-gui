@@ -35,8 +35,8 @@ public class QuartzServerRest {
 		/**Be sure not to list username/password**/
 		List<JmxServerConfig> serverConfigs = serverConfigDao.findServerConfigs();
 		for (JmxServerConfig config : serverConfigs) {
-			config.setPassword("");
-			config.setUsername("");
+			config.setPassword("***");
+			config.setUsername("***");
 		}
 		return serverConfigs;
 	}
@@ -54,8 +54,11 @@ public class QuartzServerRest {
 	
 	@GET
 	@Path("/{id}")
-	public void getServer(@PathParam("id") String id) {
-		
+	public JmxServerConfig getServer(@PathParam("id") String id) {
+		JmxServerConfig config = serverConfigDao.findServerConfigById(id);
+		config.setPassword("***");
+		config.setUsername("***");
+		return config;
 	}
 	
 	@Path("/{id}/scheduler")
